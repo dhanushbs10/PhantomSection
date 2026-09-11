@@ -1,0 +1,14 @@
+# Executables
+*.exe
+*.out
+*.app
+
+# Payloads
+*.bin
+*.raw
+
+# Visual Studio Build Folders
+x64/
+Debug/
+Release/
+.vs/
