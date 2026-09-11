@@ -1,5 +1,10 @@
 # PhantomSection
 
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
+![Language](https://img.shields.io/badge/Language-C%2B%2B-00599C?logo=c%2B%2B)
+![Platform](https://img.shields.io/badge/Platform-Windows%20x64-0078D6?logo=windows)
+![Visitors](https://hits.seeyoufarm.com/api/count/avg.svg?path=dhanushbs10%2FPhantomSection)
+
 PhantomSection is a C++ shellcode loader that combines PEB walking, Export Address Table (EAT) parsing, and ETW patching to evade userland API hooking and telemetry. Payloads are staged and XOR-encrypted to bypass static signature analysis.
 
 ## Features
